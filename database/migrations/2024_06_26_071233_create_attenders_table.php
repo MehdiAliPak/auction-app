@@ -11,21 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('auctions', function (Blueprint $table) {
+        Schema::create('attenders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('name');
-            $table->string('image');
-            $table->string('file');
-            $table->text('description');
-            $table->dateTime('start_date'); // date that auction starts
-            $table->dateTime('end_date');
-            $table->dateTime('register_start_date'); // date that auction register starts
-            $table->dateTime('register_end_date');
+            $table->unsignedBigInteger('auction_id');
+            $table->dateTime('attender_register_date');
             $table->timestamps();
 
-            $table->index('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('auction_id')->references('id')->on('auctions')->onDelete('cascade');
+
+            $table->index(['auction_id', 'user_id']);
         });
     }
 
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('auctions');
+        Schema::dropIfExists('attenders');
     }
 };
