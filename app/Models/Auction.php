@@ -11,6 +11,19 @@ class Auction extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'name',
+        'image',
+        'file',
+        'description',
+        'start_date',
+        'end_date',
+        'register_start_date',
+        'register_end_date',
+        'status',
+    ];
+
     public function auctionOwner(): BelongsTo
     {
         return $this->belongsTo(User::class,'user_id');
