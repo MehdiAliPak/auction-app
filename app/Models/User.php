@@ -52,6 +52,14 @@ class User extends Authenticatable
         ];
     }
 
+    public static function getRoleOptions()
+    {
+        return [
+            'admin' => 'Admin',
+            'user' => 'User',
+        ];
+    }
+
     public function auctions(): HasMany
     {
         return $this->HasMany(Auction::class);

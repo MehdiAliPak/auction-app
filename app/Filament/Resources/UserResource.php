@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,11 +30,18 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('email')->email()->required(),
-                TextInput::make('phone')->numeric()->rules(['min:11', 'max:11']),
-                TextInput::make('password')->password()->revealable()->required(),
-                TextInput::make('address'),
+                Section::make('')
+                    ->schema([
+                        TextInput::make('name')->required(),
+                        TextInput::make('email')->email()->required(),
+                        TextInput::make('phone')->numeric()->rules(['min:11', 'max:11']),
+                        TextInput::make('password')->password()->revealable()->required(),
+                        TextInput::make('address'),
+                        Select::make('role')
+                            ->options(User::getRoleOptions())
+                            ->default('user')
+                            ->required(),
+                    ])->columns(2),
             ]);
     }
 
@@ -43,7 +53,11 @@ class UserResource extends Resource
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('phone')->searchable(),
-                TextColumn::make('created_at')->sortable(),
+                TextColumn::make('role')->badge()->color(fn (string $state): string => match ($state) {
+                    'admin' => 'success',
+                    'user' => 'warning',
+                })->searchable(),
+                TextColumn::make('created_at')->sortable()
             ])
             ->filters([
                 // Add filters if needed
@@ -54,10 +68,10 @@ class UserResource extends Resource
                     DeleteAction::make(),
                     ViewAction::make(),
                 ])->label('Actions')
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->size(ActionSize::Small)
-                ->color('info')
-                ->button()
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(ActionSize::Small)
+                    ->color('info')
+                    ->button()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
