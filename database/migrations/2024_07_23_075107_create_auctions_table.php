@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('name');
-            $table->string('image');
+            $table->json('images')->nullable();
             $table->string('file');
             $table->text('description');
+            $table->unsignedInteger('base_price');
             $table->dateTime('start_date'); // date that auction starts
             $table->dateTime('end_date');
             $table->dateTime('register_start_date'); // date that auction register starts
             $table->dateTime('register_end_date');
-            $table->string('status');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'ongoing', 'finished', 'cancelled'])->default('pending');
             $table->timestamps();
 
             $table->index('user_id');

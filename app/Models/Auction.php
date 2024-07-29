@@ -14,9 +14,10 @@ class Auction extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'image',
+        'images',
         'file',
         'description',
+        'base_price',
         'start_date',
         'end_date',
         'register_start_date',
@@ -26,7 +27,7 @@ class Auction extends Model
 
     public function auctionOwner(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function category(): BelongsToMany
@@ -38,7 +39,7 @@ class Auction extends Model
     {
         return $this->belongsToMany(User::class, 'attenders');
     }
-    
+
     public function chats(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'chats');

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'phone',
         'address',
+        'role'
     ];
 
     /**
@@ -60,5 +61,4 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Auction::class, 'attenders');
     }
-
 }

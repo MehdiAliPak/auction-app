@@ -4,12 +4,15 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Auction;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Auction>
  */
 class AuctionFactory extends Factory
 {
+    protected $model = Auction::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,17 +20,23 @@ class AuctionFactory extends Factory
      */
     public function definition(): array
     {
+        $startDate = $this->faker->dateTimeBetween('now', '+1 month');
+        $endDate = $this->faker->dateTimeBetween($startDate, '+1 month');
+        $registerStartDate = $this->faker->dateTimeBetween('now', $startDate);
+        $registerEndDate = $this->faker->dateTimeBetween($registerStartDate, $startDate);
+
         return [
             'user_id' => User::factory(),
             'name' => $this->faker->word,
-            'image' => $this->faker->imageUrl,
+            'images' => json_encode([$this->faker->imageUrl, $this->faker->imageUrl]),
             'file' => $this->faker->word . '.pdf',
             'description' => $this->faker->paragraph,
-            'start_date' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'end_date' => $this->faker->dateTimeBetween('+1 month', '+2 months'),
-            'register_start_date' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'register_end_date' => $this->faker->dateTimeBetween('+1 month', '+2 months'),
-            'status' => 'active',
+            'base_price' => $this->faker->numberBetween(100, 10000),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'register_start_date' => $registerStartDate,
+            'register_end_date' => $registerEndDate,
+            'status' => $this->faker->randomElement(['pending', 'accepted', 'rejected', 'ongoing', 'finished', 'cancelled']),
         ];
     }
 }
