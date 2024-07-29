@@ -34,7 +34,7 @@ class UserResource extends Resource
                     ->schema([
                         TextInput::make('name')->required(),
                         TextInput::make('email')->email()->required(),
-                        TextInput::make('phone')->numeric()->rules(['min:11', 'max:11']),
+                        TextInput::make('phone')->rules(['min:11', 'max:11']),
                         TextInput::make('password')->password()->revealable()->required(),
                         TextInput::make('address'),
                         Select::make('role')

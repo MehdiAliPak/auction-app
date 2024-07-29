@@ -25,6 +25,48 @@ class Auction extends Model
         'status',
     ];
 
+    public static function getStatusOptions()
+    {
+        return [
+            'pending' => 'Pending',
+            'accepted' => 'Accepted',
+            'rejected' => 'Rejected',
+            'ongoing' => 'Ongoing',
+            'finished' => 'Finished',
+            'cancelled' => 'Cancelled',
+        ];
+    }
+    public static function getStatusOptionsColor()
+    {
+        return [
+            'pending' => 'primary',
+            'accepted' => 'info',
+            'rejected' => 'danger',
+            'ongoing' => 'success',
+            'finished' => 'success',
+            'cancelled' => 'danger',
+        ];
+    }
+    public static function getStatusOptionsIcon()
+    {
+        return [
+            'pending' => 'heroicon-m-sparkles',
+            'accepted' => 'heroicon-m-arrow-path',
+            'rejected' => 'heroicon-m-exclamation-triangle',
+            'ongoing' => 'heroicon-m-play-circle',
+            'finished' => 'heroicon-m-check-badge',
+            'cancelled' => 'heroicon-m-x-circle',
+        ];
+    }
+
+    protected $casts = [
+        'images' => 'array',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'register_start_date' => 'datetime',
+        'register_end_date' => 'datetime',
+    ];
+
     public function auctionOwner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
