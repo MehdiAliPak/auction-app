@@ -21,6 +21,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -81,7 +82,18 @@ class AuctionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('auctionOwner.name')->searchable(),
+                TextColumn::make('start_date')->dateTime('Y/m/d'),
+                TextColumn::make('end_date')->dateTime('Y/m/d'),
+                TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                    'pending' => 'primary',
+                    'accepted' => 'info',
+                    'rejected' => 'danger',
+                    'ongoing' => 'success',
+                    'finished' => 'success',
+                    'cancelled' => 'danger',
+                })->searchable(),
             ])
             ->filters([
                 //
