@@ -33,7 +33,7 @@ class UserResource extends Resource
                 Section::make('')
                     ->schema([
                         TextInput::make('name')->required(),
-                        TextInput::make('email')->email()->required(),
+                        TextInput::make('email')->email()->required()->rules(['unique:users,email']),
                         TextInput::make('phone')->rules(['min:11', 'max:11']),
                         TextInput::make('password')->password()->revealable()->required(),
                         TextInput::make('address'),

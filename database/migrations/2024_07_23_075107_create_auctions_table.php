@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->json('images')->nullable();
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->text('description');
             $table->unsignedInteger('base_price');
             $table->dateTime('start_date'); // date that auction starts

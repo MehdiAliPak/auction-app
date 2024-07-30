@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AuctionResource\Pages;
 use App\Filament\Resources\AuctionResource\RelationManagers;
 use App\Models\Auction;
+use App\Models\Category;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,11 +22,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\ViewAction;
 
 class AuctionResource extends Resource
 {
@@ -64,6 +70,24 @@ class AuctionResource extends Resource
                         ->schema([
                             TextInput::make('base_price')->required()->numeric()->prefix('IRR'),
                         ]),
+                    Section::make('Attenders')
+                        ->schema([
+                            Select::make('attenders')
+                                ->label('Assign Users')
+                                ->options(User::all()->pluck('name', 'id'))
+                                ->multiple()
+                                ->preload()
+                                ->relationship('attenders', 'name'),
+                        ]),
+                    Section::make('Category')
+                        ->schema([
+                            Select::make('category')
+                                ->label('Assign Categories')
+                                ->options(Category::all()->pluck('name', 'id'))
+                                ->multiple()
+                                ->preload()
+                                ->relationship('category', 'name'),
+                        ]),
                     Section::make('Status')
                         ->schema([
                             ToggleButtons::make('status')
@@ -82,10 +106,12 @@ class AuctionResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->searchable()->sortable(),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('auctionOwner.name')->searchable(),
                 TextColumn::make('start_date')->dateTime('Y/m/d'),
                 TextColumn::make('end_date')->dateTime('Y/m/d'),
+                TextColumn::make('category.name')->searchable(),
                 TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                     'pending' => 'primary',
                     'accepted' => 'info',
@@ -99,7 +125,15 @@ class AuctionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    ViewAction::make(),
+                ])->label('Actions')
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(ActionSize::Small)
+                    ->color('info')
+                    ->button()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
