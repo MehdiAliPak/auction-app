@@ -13,7 +13,8 @@ class Category extends Model
     protected $fillable = [
         'name',
         'slug',
-        'image'
+        'image',
+        'is_active'
     ];
 
     public function auctions(): BelongsToMany

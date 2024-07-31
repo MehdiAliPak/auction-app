@@ -25,6 +25,7 @@ class CategoryFactory extends Factory
             'name' => $name,
             'slug' => Str::slug($name),
             'image' => $this->faker->imageUrl(),
+            'is_active' => $this->faker->boolean,
         ];
     }
 }

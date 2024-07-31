@@ -10,6 +10,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
@@ -18,6 +19,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -49,7 +51,8 @@ class CategoryResource extends Resource
                             ->dehydrated()
                             ->unique(Category::class, 'slug', ignoreRecord: true),
                     ]),
-                    FileUpload::make('image')->image()->directory('categories')
+                    FileUpload::make('image')->image()->directory('categories'),
+                    Toggle::make('is_active')->required()->default(true)
                 ])
             ]);
     }
@@ -62,6 +65,7 @@ class CategoryResource extends Resource
                 ImageColumn::make('image'),
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('slug'),
+                IconColumn::make('is_active')->boolean(),
                 TextColumn::make('created_at')
             ])
             ->filters([

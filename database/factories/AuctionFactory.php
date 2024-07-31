@@ -28,10 +28,11 @@ class AuctionFactory extends Factory
         return [
             'user_id' => User::factory(),
             'name' => $this->faker->word,
-            'images' => json_encode([$this->faker->imageUrl, $this->faker->imageUrl]),
+            'images' => json_encode([$this->faker->imageUrl(), $this->faker->imageUrl()]),
             'file' => $this->faker->word . '.pdf',
             'description' => $this->faker->paragraph,
             'base_price' => $this->faker->numberBetween(100, 10000),
+            'final_price' => $this->faker->optional()->numberBetween(100, 10000),
             'start_date' => $startDate,
             'end_date' => $endDate,
             'register_start_date' => $registerStartDate,

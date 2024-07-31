@@ -18,6 +18,7 @@ class Auction extends Model
         'file',
         'description',
         'base_price',
+        'final_price',
         'start_date',
         'end_date',
         'register_start_date',

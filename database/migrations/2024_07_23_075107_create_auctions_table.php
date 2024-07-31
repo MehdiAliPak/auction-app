@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('file')->nullable();
             $table->text('description');
             $table->unsignedInteger('base_price');
+            $table->unsignedInteger('final_price')->nullable();
             $table->dateTime('start_date'); // date that auction starts
             $table->dateTime('end_date');
             $table->dateTime('register_start_date'); // date that auction register starts

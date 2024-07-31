@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -30,19 +32,32 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('')
-                    ->schema([
-                        TextInput::make('name')->required(),
-                        TextInput::make('email')->email()->required()->rules(['unique:users,email']),
-                        TextInput::make('phone')->rules(['min:11', 'max:11']),
-                        TextInput::make('password')->password()->revealable()->required(),
-                        TextInput::make('address'),
-                        Select::make('role')
-                            ->options(User::getRoleOptions())
-                            ->default('user')
-                            ->required(),
-                    ])->columns(2),
-            ]);
+                Group::make()->schema([
+                    Section::make('User Information')
+                        ->schema([
+                            TextInput::make('name')->required(),
+                            TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
+                            TextInput::make('phone')->rules(['min:11', 'max:11']),
+                            TextInput::make('password')->password()->revealable()->required(),
+                            TextInput::make('address'),
+                            Select::make('role')
+                                ->options(User::getRoleOptions())
+                                ->default('user')
+                                ->required(),
+                        ])->columns(2),
+                ])->columnSpan(3),
+                Group::make()->schema([
+                    Section::make('User Profile')
+                        ->schema([
+                            FileUpload::make('image')->image()->label('profile')->directory('users')->avatar()->imageEditor()
+                                ->imageEditorAspectRatios([
+                                    '16:9',
+                                    '4:3',
+                                    '1:1',
+                                ]),
+                        ])->columnSpan(1),
+                ])->columnSpan(1),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
