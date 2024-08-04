@@ -170,7 +170,7 @@
           <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
 
             @foreach ( $categories as $category )
-            <a wire:key="{{ $category->id }}" class="flex flex-col transition bg-white border shadow-sm group rounded-xl hover:shadow-md dark:bg-slate-900 dark:border-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="#">
+            <a  href="/auctions?selected_categories[0]={{ $category->id }}" wire:key="{{ $category->id }}" class="flex flex-col transition bg-white border shadow-sm group rounded-xl hover:shadow-md dark:bg-slate-900 dark:border-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
               <div class="p-4 md:p-5">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">

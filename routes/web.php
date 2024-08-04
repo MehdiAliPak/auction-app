@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomePage::class);
 Route::get('/categories', CategoriesPage::class);
 Route::get('/auctions', AuctionsPage::class);
-Route::get('/auctions/{auction}', AuctionDetailPage::class);
+Route::get('/auctions/{id}', AuctionDetailPage::class);
 
 Route::get('/login', LoginPage::class);
 Route::get('/register', RegisterPage::class);
