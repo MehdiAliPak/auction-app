@@ -22,9 +22,9 @@ return new class extends Migration
             $table->unsignedInteger('final_price')->nullable();
             $table->dateTime('start_date'); // date that auction starts
             $table->dateTime('end_date');
-            $table->dateTime('register_start_date'); // date that auction register starts
-            $table->dateTime('register_end_date');
-            $table->enum('status', ['pending', 'accepted', 'rejected', 'ongoing', 'finished', 'cancelled'])->default('pending');
+            // $table->dateTime('register_start_date'); // date that auction register starts
+            // $table->dateTime('register_end_date');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'ongoing', 'finished'])->default('pending');
             $table->timestamps();
 
             $table->index('user_id');

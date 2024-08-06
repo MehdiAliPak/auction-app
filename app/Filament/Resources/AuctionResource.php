@@ -49,8 +49,8 @@ class AuctionResource extends Resource
                             MarkdownEditor::make('description')->columnSpanFull()->fileAttachmentsDirectory('auctions'),
                             DateTimePicker::make('start_date')->required()->minDate(now()),
                             DateTimePicker::make('end_date')->required(),
-                            DatePicker::make('register_start_date')->required(),
-                            DatePicker::make('register_end_date')->required(),
+                            // DatePicker::make('register_start_date')->required(),
+                            // DatePicker::make('register_end_date')->required(),
                         ])->columns(2),
                     Section::make('Images and Files')
                         ->schema([
@@ -118,7 +118,6 @@ class AuctionResource extends Resource
                     'rejected' => 'danger',
                     'ongoing' => 'success',
                     'finished' => 'success',
-                    'cancelled' => 'danger',
                 })->searchable(),
             ])
             ->filters([

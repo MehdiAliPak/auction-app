@@ -35,9 +35,9 @@ class AuctionFactory extends Factory
             'final_price' => $this->faker->optional()->numberBetween(100, 10000),
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'register_start_date' => $registerStartDate,
-            'register_end_date' => $registerEndDate,
-            'status' => $this->faker->randomElement(['pending', 'accepted', 'rejected', 'ongoing', 'finished', 'cancelled']),
+            // 'register_start_date' => $registerStartDate,
+            // 'register_end_date' => $registerEndDate,
+            'status' => $this->faker->randomElement(['pending', 'accepted', 'rejected', 'ongoing', 'finished']),
         ];
     }
 }

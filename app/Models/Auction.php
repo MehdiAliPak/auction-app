@@ -21,8 +21,8 @@ class Auction extends Model
         'final_price',
         'start_date',
         'end_date',
-        'register_start_date',
-        'register_end_date',
+        // 'register_start_date',
+        // 'register_end_date',
         'status',
     ];
 
@@ -34,7 +34,6 @@ class Auction extends Model
             'rejected' => 'Rejected',
             'ongoing' => 'Ongoing',
             'finished' => 'Finished',
-            'cancelled' => 'Cancelled',
         ];
     }
     public static function getStatusOptionsColor()
@@ -45,7 +44,6 @@ class Auction extends Model
             'rejected' => 'danger',
             'ongoing' => 'success',
             'finished' => 'success',
-            'cancelled' => 'danger',
         ];
     }
     public static function getStatusOptionsIcon()
@@ -56,7 +54,6 @@ class Auction extends Model
             'rejected' => 'heroicon-m-exclamation-triangle',
             'ongoing' => 'heroicon-m-play-circle',
             'finished' => 'heroicon-m-check-badge',
-            'cancelled' => 'heroicon-m-x-circle',
         ];
     }
 
@@ -64,8 +61,8 @@ class Auction extends Model
         'images' => 'array',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
-        'register_start_date' => 'datetime',
-        'register_end_date' => 'datetime',
+        // 'register_start_date' => 'datetime',
+        // 'register_end_date' => 'datetime',
     ];
 
     public function auctionOwner(): BelongsTo

@@ -31,9 +31,18 @@ class AuctionsPage extends Component
     #[Url()]
     public $sort = 'latest';
 
+    public $currentTime;
+
+    public function mount()
+    {
+        $this->currentTime = now();
+    }
+
     public function render()
     {
-        $auctionQuery = Auction::query();
+
+        $this->currentTime = now(); // Update current time
+        $auctionQuery = Auction::query()->whereIn('status', ['accepted', 'ongoing', 'finished']);
 
         if (!empty($this->selected_categories)) {
             // Assuming there is a relationship 'category' on the Auction model
@@ -66,15 +75,5 @@ class AuctionsPage extends Component
             'auctions' => $auctionQuery->paginate(9),
             'categories' => Category::where('is_active', 1)->get(['id', 'name', 'slug']),
         ]);
-    }
-
-    public function getAuctionStatus($auction)
-    {
-        return AuctionHelper::getAuctionStatus($auction);
-    }
-
-    public function getRemainingTime($auction)
-    {
-        return AuctionHelper::getRemainingTime($auction);
     }
 }
