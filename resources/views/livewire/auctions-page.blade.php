@@ -1,5 +1,5 @@
 @php
-    use App\Helpers\AuctionHelper;
+    use Carbon\Carbon;
 @endphp
 
 <div class="w-full px-4 py-10 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -42,13 +42,13 @@
                                     <span class="text-lg font-medium">On Going</span>
                                 </label>
                             </li>
-                            <li class="mb-4">
+                            {{-- <li class="mb-4">
                                 <label for="finished" class="flex items-center dark:text-gray-400">
                                     <input type="checkbox" id="finished" wire:model.live="finished" value="1"
                                         class="w-4 h-4 mr-2">
                                     <span class="text-lg font-medium">Finished</span>
                                 </label>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                 </div>
@@ -82,34 +82,68 @@
                                                 {{ $auction->name }}
                                             </h3>
                                         </div>
-                                        <p class="text-lg">
-                                            @if ($auction->status == 'accepted')
-                                                <span class="text-blue-600 dark:text-blue-600">Registering:</span>
-                                                <span id="timer-registering-{{ $auction->id }}"
-                                                    data-end-time="{{ $auction->register_end_date }}"></span>
-                                            @elseif ($auction->status == 'ongoing')
-                                                <span class="text-green-600 dark:text-green-600">Ongoing:</span>
-                                                <span id="timer-ongoing-{{ $auction->id }}"
-                                                    data-end-time="{{ $auction->end_date }}"></span>
-                                            @elseif ($auction->status == 'finished')
-                                                <span class="text-red-600 dark:text-red-600">Finished</span>
-                                            @else
-                                                <span class="text-gray-600 dark:text-gray-600">Upcoming:</span>
-                                                <span id="timer-upcoming-{{ $auction->id }}"
-                                                    data-start-time="{{ $auction->start_date }}"></span>
-                                            @endif
-                                        </p>
+                                        <div class="flex items-center justify-between">
+                                            <p class="text-sm">
+                                                by <span class="font-medium">{{ $auction->auctionOwner->name }}</span>
+                                            </p>
+                                            <span
+                                                class="
+                                                {{ $auction->status == 'accepted' ? 'bg-blue-500 text-white' : 'bg-green-500 text-white' }}
+                                                px-2 py-1 rounded text-xs
+                                            ">
+                                                {{ $auction->status == 'accepted' ? 'Registering' : 'OnGoing' }}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center justify-between mt-2">
+                                            <p class="text-sm">
+                                                <span class="font-medium">Base Price:</span>
+                                            </p>
+                                            <span class="px-2 py-1 text-xs rounded">
+                                                ${{ number_format($auction->base_price, 2) }}
+                                            </span>
+                                        </div>
+                                        <div class="mt-2">
+                                            <p class="text-sm">
+                                                {{ $auction->status == 'accepted' ? 'Starts in:' : 'Time remaining:' }}
+                                            </p>
+                                            <p class="text-sm">
+                                                @php
+                                                    $endDate = Carbon::parse($auction->end_date);
+                                                    $now = Carbon::now();
+                                                    $diff = $endDate->diff($now);
+                                                @endphp
+                                                @if ($auction->status == 'accepted')
+                                                    {{ $auction->start_date }}
+                                                @else
+                                                    @if ($now->lt($endDate))
+                                                        @if ($diff->days > 0)
+                                                            {{ $diff->days }} d
+                                                        @endif
+                                                        @if ($diff->h > 0 || $diff->days > 0)
+                                                            {{ $diff->h }} h
+                                                        @endif
+                                                        @if ($diff->i > 0 || $diff->h > 0 || $diff->days > 0)
+                                                            {{ $diff->i }} m
+                                                        @endif
+                                                        @if ($diff->s > 0 || $diff->i > 0 || $diff->h > 0 || $diff->days > 0)
+                                                            {{ $diff->s }} s
+                                                        @endif
+                                                    @else
+                                                        Auction has ended.
+                                                    @endif
+                                                @endif
+                                            </p>
+                                        </div>
                                     </div>
                                     <div class="flex justify-center p-4 border-t border-gray-300 dark:border-gray-700">
                                         <a href="#"
                                             class="flex items-center space-x-2 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
+                                            <span>Register</span>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="w-4 h-4 bi bi-cart3" viewBox="0 0 16 16">
+                                                fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                 <path
-                                                    d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z">
-                                                </path>
+                                                    d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
                                             </svg>
-                                            <span>Add to Cart</span>
                                         </a>
                                     </div>
                                 </div>
@@ -125,48 +159,4 @@
             </div>
         </div>
     </section>
-    <script>
-        function updateTimers() {
-            const now = new Date();
-
-            document.querySelectorAll('[id^="timer-"]').forEach(timerElement => {
-                const endTime = new Date(timerElement.dataset.endTime);
-                const startTime = new Date(timerElement.dataset.startTime);
-                let timeDiff = endTime - now;
-                let prefix = '';
-
-                if (timerElement.id.includes('upcoming')) {
-                    timeDiff = startTime - now;
-                    prefix = 'Starts in: ';
-                } else if (timerElement.id.includes('finished')) {
-                    prefix = 'Ended: ';
-                } else {
-                    prefix = 'Ends in: ';
-                }
-
-                const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-                let timerText = '';
-                if (days > 0) {
-                    timerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                } else if (hours > 0) {
-                    timerText = `${hours}h ${minutes}m ${seconds}s`;
-                } else if (minutes > 0) {
-                    timerText = `${minutes}m ${seconds}s`;
-                } else {
-                    timerText = `${seconds}s`;
-                }
-
-                timerElement.textContent = prefix + timerText;
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateTimers();
-            setInterval(updateTimers, 1000);
-        });
-    </script>
 </div>
