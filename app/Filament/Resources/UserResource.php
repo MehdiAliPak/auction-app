@@ -28,6 +28,12 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -68,7 +74,7 @@ class UserResource extends Resource
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('phone')->searchable(),
-                TextColumn::make('role')->badge()->color(fn (string $state): string => match ($state) {
+                TextColumn::make('role')->badge()->color(fn(string $state): string => match ($state) {
                     'admin' => 'success',
                     'user' => 'warning',
                 })->searchable(),

@@ -53,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->brandLogo(asset('storage/logo/logo.png'));
     }
 }

@@ -40,6 +40,7 @@ class AuctionResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
         return $form
             ->schema([
                 Group::make()->schema([
@@ -64,8 +65,12 @@ class AuctionResource extends Resource
                     Section::make('Belongs to')
                         ->schema([
                             Select::make('user_id')
-                                ->required()->searchable()->preload()->relationship('auctionOwner', 'name')
-                        ]),
+                                ->required()
+                                ->searchable()
+                                ->preload()
+                                ->relationship('auctionOwner', 'name')
+                                ->default(fn() => auth()->user()->id)
+                        ])->visible(fn() => $user->role === 'admin'),
                     Section::make('Base Price')
                         ->schema([
                             TextInput::make('base_price')->required()->numeric()->prefix('IRR'),
@@ -77,8 +82,28 @@ class AuctionResource extends Resource
                                 ->options(User::all()->pluck('name', 'id'))
                                 ->multiple()
                                 ->preload()
-                                ->relationship('attenders', 'name'),
-                        ]),
+                                ->relationship('attenders', 'name')
+                                ->saveRelationshipsUsing(function ($component, $state) {
+                                    // Get the current attenders already associated
+                                    $existingAttenders = $component->getRelationship()
+                                        ->pluck('users.id')
+                                        ->toArray();
+
+                                    // Determine which attenders are newly added
+                                    $newAttenders = array_diff($state, $existingAttenders);
+
+                                    // Sync the existing attenders without altering the register date
+                                    $component->getRelationship()->syncWithoutDetaching($existingAttenders);
+
+                                    // Sync the new attenders with the current date
+                                    $component->getRelationship()->syncWithoutDetaching(
+                                        collect($newAttenders)->mapWithKeys(function ($userId) {
+                                            return [$userId => ['attender_register_date' => now()]];
+                                        })->toArray()
+                                    );
+                                }),
+                        ])->visible(fn() => $user->role === 'admin'),
+
                     Section::make('Category')
                         ->schema([
                             Select::make('category')
@@ -97,7 +122,7 @@ class AuctionResource extends Resource
                                 ->icons(Auction::getStatusOptionsIcon())
                                 ->default('pending')
                                 ->required(),
-                        ])
+                        ])->visible(fn() => $user->role === 'admin')
                 ])->columnSpan(1),
             ])->columns(3);
     }
@@ -112,7 +137,7 @@ class AuctionResource extends Resource
                 TextColumn::make('start_date')->dateTime('Y/m/d'),
                 TextColumn::make('end_date')->dateTime('Y/m/d'),
                 TextColumn::make('category.name')->searchable(),
-                TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
+                TextColumn::make('status')->badge()->color(fn(string $state): string => match ($state) {
                     'pending' => 'primary',
                     'accepted' => 'info',
                     'rejected' => 'danger',
@@ -140,6 +165,12 @@ class AuctionResource extends Resource
                 ]),
             ]);
     }
+
+    // protected function mutateFormDataBeforeCreate(array $data): array
+    // {
+    //     $data['user_id'] = auth()->id();
+    //     return $data;
+    // }
 
     public static function getRelations(): array
     {

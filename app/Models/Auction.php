@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Date;
 
 class Auction extends Model
 {
@@ -77,7 +78,8 @@ class Auction extends Model
 
     public function attenders(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'attenders');
+        return $this->belongsToMany(User::class, 'attenders')->withPivot('attender_register_date')
+            ->withTimestamps();
     }
 
     public function chats(): BelongsToMany

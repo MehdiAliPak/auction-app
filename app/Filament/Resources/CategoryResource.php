@@ -33,6 +33,11 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->role === 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -43,7 +48,7 @@ class CategoryResource extends Resource
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                            ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
                         TextInput::make('slug')
                             ->maxLength(255)
                             ->disabled()
