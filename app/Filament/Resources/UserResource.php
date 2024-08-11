@@ -33,9 +33,9 @@ class UserResource extends Resource
         return auth()->user()->role === 'admin';
     }
 
-
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
         return $form
             ->schema([
                 Group::make()->schema([
@@ -49,7 +49,8 @@ class UserResource extends Resource
                             Select::make('role')
                                 ->options(User::getRoleOptions())
                                 ->default('user')
-                                ->required(),
+                                ->required()
+                                ->visible(fn() => $user->role === 'admin'),
                         ])->columns(2),
                 ])->columnSpan(3),
                 Group::make()->schema([

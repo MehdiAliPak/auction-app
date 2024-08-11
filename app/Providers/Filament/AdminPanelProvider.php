@@ -2,9 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\UserResource;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -55,5 +59,19 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->brandLogo(asset('storage/logo/logo.png'));
+    }
+
+    public function boot()
+    {
+        Filament::serving(function () {
+            if (auth()->user()->role === 'user') {
+                Filament::registerNavigationItems([
+                    NavigationItem::make('Profile')
+                        ->url(UserResource::getUrl('edit', ['record' => auth()->user()->id]))
+                        ->icon('heroicon-o-user')
+                        ->sort(1),
+                ]);
+            }
+        });
     }
 }
