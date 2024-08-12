@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TestController;
 use App\Livewire\AuctionDetailPage;
+use App\Livewire\AuctionRoomPage;
 use App\Livewire\AuctionsPage;
 use App\Livewire\Auth\ForgotPasswordPage;
 use App\Livewire\Auth\LoginPage;
@@ -33,4 +34,5 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/success', SuccessPage::class);
     Route::get('/cancel', CancelPage::class);
+    Route::get('/auction-room/{auction}', AuctionRoomPage::class)->name('auction.room');
 });

@@ -154,7 +154,7 @@
                                                     Registered
                                                 </span>
                                             @elseif (in_array($auction->id, $registeredAuctions) && $auction->status == 'ongoing')
-                                                <a href="#"
+                                                <a href="{{ route('auction.room', ['auction' => $auction->id]) }}"
                                                     class="flex items-center space-x-2 text-gray-500 cursor-pointer dark:text-gray-400 hover:text-red-500 dark:hover:text-red-300">
                                                     <span>
                                                         Start to Bid
