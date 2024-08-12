@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\AuctionHelper;
+use App\Models\Attenders;
 use App\Models\Auction;
 use App\Models\Category;
 use Livewire\Attributes\Title;
@@ -10,6 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 #[Title('Auctions - BidAuction')]
 
@@ -28,6 +30,30 @@ class AuctionsPage extends Component
 
     #[Url()]
     public $sort = 'latest';
+
+    public $registeredAuctions = [];
+
+    public function mount()
+    {
+        $this->fetchRegisteredAuctions();
+    }
+
+    /**
+     * Fetch the list of auction IDs the user has registered to.
+     */
+    public function fetchRegisteredAuctions()
+    {
+        $this->registeredAuctions = Attenders::where('user_id', Auth::id())
+            ->pluck('auction_id')
+            ->toArray();
+    }
+
+    // register user to auction
+    public function registerToAuction($auction_id)
+    {
+        AuctionHelper::registerInAuction($auction_id);
+        $this->registeredAuctions[] = $auction_id;
+    }
 
     public function render()
     {

@@ -14,6 +14,7 @@ use App\Livewire\SuccessPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
+// Route::get('/test', [TestController::class, 'log_date_to_file'])->name("log_date_to_file");
 Route::get('/categories', CategoriesPage::class);
 Route::get('/auctions', AuctionsPage::class);
 Route::get('/auctions/{id}', AuctionDetailPage::class);
