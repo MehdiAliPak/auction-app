@@ -29,6 +29,12 @@ class AuctionRoomPage extends Component
     {
         $this->validate();
 
+        // Check if the auction has ended
+        if ($this->auction->status === 'finished') {
+            session()->flash('error', 'The auction has already ended.');
+            return;
+        }
+
         if ($this->newBid > $this->currentBid) {
             $chat = Chat::create([
                 'user_id' => Auth::id(),
