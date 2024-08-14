@@ -78,9 +78,11 @@
                                     </div>
                                     <div class="p-4">
                                         <div class="flex items-center justify-between gap-2 mb-2">
-                                            <h3 class="text-xl font-semibold dark:text-gray-400">
-                                                {{ $auction->name }}
-                                            </h3>
+                                            <a href="/auctions/{{ $auction->id }}" class="">
+                                                <h3 class="text-xl font-semibold dark:text-gray-400">
+                                                    {{ $auction->name }}
+                                                </h3>
+                                            </a>
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <p class="text-sm">
