@@ -64,7 +64,7 @@ class AdminPanelProvider extends PanelProvider
     public function boot()
     {
         Filament::serving(function () {
-            if (auth()->user()->role === 'user') {
+            if (auth()->check() && auth()->user()->role === 'user') {
                 Filament::registerNavigationItems([
                     NavigationItem::make('Profile')
                         ->url(UserResource::getUrl('edit', ['record' => auth()->user()->id]))
